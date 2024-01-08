@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"dev.relismdev.playlegendquests"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"dev.relismdev.playlegendquests"},{"l":"dev.relismdev.playlegendquests.Models"},{"l":"dev.relismdev.playlegendquests.storage"},{"l":"dev.relismdev.playlegendquests.utils"}];updateSearchResults();

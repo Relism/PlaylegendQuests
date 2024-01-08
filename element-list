@@ -1,1 +1,4 @@
 dev.relismdev.playlegendquests
+dev.relismdev.playlegendquests.Models
+dev.relismdev.playlegendquests.storage
+dev.relismdev.playlegendquests.utils
