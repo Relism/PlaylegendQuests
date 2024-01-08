@@ -1,0 +1,7 @@
+name: Playlegendquests
+version: '${project.version}'
+main: dev.relismdev.playlegendquests.Playlegendquests
+api-version: 1.20
+prefix: PLQ
+authors: [ Relism ]
+description: Playlegend's quests task plugin
