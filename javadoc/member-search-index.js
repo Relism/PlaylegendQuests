@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"dev.relismdev.playlegendquests","c":"Playlegendquests","l":"onDisable()"},{"p":"dev.relismdev.playlegendquests","c":"Playlegendquests","l":"onEnable()"},{"p":"dev.relismdev.playlegendquests","c":"Playlegendquests","l":"Playlegendquests()","u":"%3Cinit%3E()"}];updateSearchResults();
