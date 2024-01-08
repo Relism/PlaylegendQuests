@@ -70,11 +70,6 @@ public class DatabaseWrapper {
      * If a connection is available, it is retrieved and logged as obtained from the pool.
      * If no connection is immediately available, this method waits until one becomes available.
      *
-     * @implNote This method is responsible for fetching a database connection from the pool.
-     *           It utilizes the connectionPool's blocking behavior to wait for an available connection.
-     *           Upon obtaining a connection, it logs the successful retrieval from the pool.
-     *           Any interruptions during the wait for a connection are logged, and null is returned.
-     *
      * @return A database connection object retrieved from the pool if available; otherwise, null.
      */
     public static Connection getConnection() {
@@ -97,9 +92,6 @@ public class DatabaseWrapper {
      * @param connection The database connection object to be released.
      *                   If null, no action is taken.
      *                   If valid, it is returned to the connection pool for reuse.
-     * @implNote This method aims to manage database connection resources effectively
-     *           by returning connections to the pool when they're no longer needed,
-     *           promoting resource efficiency and reuse within the application.
      */
     public static void releaseConnection(Connection connection) {
         if (connection != null) {
@@ -118,9 +110,6 @@ public class DatabaseWrapper {
      * It iterates through the connection pool, attempts to close each connection,
      * and logs the outcome of the closure operation.
      *
-     * @implNote This method ensures that all active database connections in the pool are closed.
-     *           It iterates through the connection pool, attempting to close each connection,
-     *           and logs successful closures or any encountered SQLExceptions.
      */
     public static void closeConnections() {
         for (Connection connection : connectionPool) {
