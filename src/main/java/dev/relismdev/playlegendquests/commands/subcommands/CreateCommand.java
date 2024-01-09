@@ -34,7 +34,7 @@ public class CreateCommand extends SubCommand {
     /**
      * Retrieves the syntax of this subcommand.
      *
-     * @return The syntax for using this subcommand ("/quests create <name> <description> <reward_coins> <reward item true/false>").
+     * @return The syntax for using this subcommand.
      */
     @Override
     public String getSyntax() {
