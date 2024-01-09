@@ -23,7 +23,7 @@ public class DatabaseWrapper {
     private static String DB_USER;
     private static String DB_PASSWORD;
     private static String DB_NAME; // Added field for the database name
-    private static final int MAX_CONNECTIONS = 10;
+    private static int MAX_CONNECTIONS = 10;
     private static BlockingQueue<Connection> connectionPool;
 
     /**
@@ -134,7 +134,7 @@ public class DatabaseWrapper {
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
 
-            String initializeQuestsTableQuery = "CREATE TABLE IF NOT EXISTS quests (id VARCHAR(255) PRIMARY KEY, name VARCHAR(255), description TEXT, reward_coins BIGINT, reward_item TEXT)";
+            String initializeQuestsTableQuery = "CREATE TABLE IF NOT EXISTS quests (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), description TEXT, reward_coins BIGINT, reward_item TEXT)";
             statement.execute(initializeQuestsTableQuery);
 
             releaseConnection(connection);
@@ -171,26 +171,25 @@ public class DatabaseWrapper {
      * If found, it constructs and returns a Quest object encapsulating the retrieved data.
      * If not found or if an error occurs during the database query, it returns null.
      *
-     * @param id The unique identifier of the quest to retrieve.
+     * @param name The name of the quest to retrieve.
      * @return A Quest object containing the details of the requested quest if found; otherwise, null.
      */
-    public static Quest getQuest(String id) throws SQLException {
-        String query = "SELECT * FROM quests WHERE id = ?";
+    public static Quest getQuest(String name) throws SQLException {
+        String query = "SELECT * FROM quests WHERE name = ?";
         Connection connection = getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, id);
+        statement.setString(1, name);
         ResultSet resultSet = statement.executeQuery();
 
         if (resultSet.next()) {
             String questId = resultSet.getString("id");
-            String name = resultSet.getString("name");
             String description = resultSet.getString("description");
             int rewardCoins = resultSet.getInt("reward_coins");
             String serializedItem = resultSet.getString("reward_item"); // Assuming reward_item is stored as a serialized string
 
             ItemStack rewardItem = deserializeItemStack(serializedItem);
 
-            return new Quest(questId, name, description, rewardCoins, rewardItem);
+            return new Quest(name, description, rewardCoins, rewardItem);
         }
         releaseConnection(connection);
         return null;
@@ -208,18 +207,17 @@ public class DatabaseWrapper {
      * @throws IllegalStateException If there's a SQL exception during the insertion process.
      */
     public static boolean createQuest(Quest quest) throws SQLException {
-        String query = "INSERT INTO quests (id, name, description, reward_coins, reward_item) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO quests (name, description, reward_coins, reward_item) VALUES (?, ?, ?, ?)";
         Connection connection = null;
         PreparedStatement statement = null;
 
         connection = getConnection();
-        statement = connection.prepareStatement(query);
+        statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
-        statement.setString(1, quest.getId());
-        statement.setString(2, quest.getName());
-        statement.setString(3, quest.getDescription());
-        statement.setInt(4, quest.getReward_coins());
-        statement.setString(5, serializeItemStack(quest.getReward_item()));
+        statement.setString(1, quest.getName());
+        statement.setString(2, quest.getDescription());
+        statement.setInt(3, quest.getReward_coins());
+        statement.setString(4, serializeItemStack(quest.getReward_item()));
 
         int rowsInserted = statement.executeUpdate();
 
@@ -244,13 +242,13 @@ public class DatabaseWrapper {
         PreparedStatement statement = null;
 
         connection = getConnection();
-        statement = connection.prepareStatement("UPDATE quests SET name = ?, description = ?, reward_coins = ?, reward_item = ? WHERE id = ?");
+        statement = connection.prepareStatement("UPDATE quests SET name = ?, description = ?, reward_coins = ?, reward_item = ? WHERE name = ?");
 
         statement.setString(1, quest.getName());
         statement.setString(2, quest.getDescription());
         statement.setInt(3, quest.getReward_coins());
         statement.setString(4, serializeItemStack(quest.getReward_item()));
-        statement.setString(5, quest.getId());
+        statement.setString(5, quest.getName());
 
         int rowsAffected = statement.executeUpdate();
 
@@ -329,9 +327,7 @@ public class DatabaseWrapper {
 
 
     /**
-     * Generates and retrieves the complete database URL for establishing a connection.
-     * Constructs the database URL based on the configured database URL and database name,
-     * ensuring that SSL usage is explicitly set to 'false'.
+     * Generates the complete database URL for establishing a connection.
      *
      * @return The complete JDBC URL for the database connection with SSL disabled.
      */
@@ -344,7 +340,6 @@ public class DatabaseWrapper {
      * Disables the database wrapper by closing all active connections.
      * This method ensures the graceful shutdown of database connections
      * when the plugin is disabled or needs to halt its database interaction.
-     * It calls the 'closeConnections' method to release all active database connections.
      * It's recommended to invoke this method during plugin shutdown or when the
      * database interaction is no longer required to prevent resource leaks.
      */

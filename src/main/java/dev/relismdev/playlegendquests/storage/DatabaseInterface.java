@@ -1,8 +1,9 @@
-package dev.relismdev.playlegendquests.utils;
+package dev.relismdev.playlegendquests.storage;
 
 import dev.relismdev.playlegendquests.Models.Economy;
 import dev.relismdev.playlegendquests.Models.Quest;
 import dev.relismdev.playlegendquests.storage.DatabaseWrapper;
+import dev.relismdev.playlegendquests.utils.msg;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.SQLException;
@@ -28,12 +29,12 @@ public class DatabaseInterface {
     /**
      * Retrieves a Quest object from the database based on the provided ID.
      *
-     * @param id The unique identifier of the quest to retrieve.
+     * @param name The name of the quest to retrieve.
      * @return A Quest object containing the details of the requested quest if found; otherwise, null.
      */
-    public static Quest getQuest(String id){
+    public static Quest getQuest(String name){
         try {
-            return DatabaseWrapper.getQuest(id);
+            return DatabaseWrapper.getQuest(name);
         } catch (SQLException e) {
             errorHandle(e);
             return null;

@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Quest {
 
-    private final String id; // Unique identifier of the quest
     private String name; // Name of the quest
     private String description; // Description of the quest
     private int reward_coins; // Coins rewarded upon completion
@@ -17,27 +16,16 @@ public class Quest {
     /**
      * Constructs a Quest object with the specified details.
      *
-     * @param id             The unique identifier of the quest.
      * @param name           The name of the quest.
      * @param description    The description of the quest.
      * @param reward_coins   The amount of coins rewarded for completing the quest.
      * @param reward_item    The ItemStack representing the item rewarded for completing the quest.
      */
-    public Quest(String id, String name, String description, int reward_coins, ItemStack reward_item) {
-        this.id = id;
+    public Quest(String name, String description, int reward_coins, ItemStack reward_item) {
         this.name = name;
         this.description = description;
         this.reward_coins = reward_coins;
         this.reward_item = reward_item;
-    }
-
-    /**
-     * Retrieves the unique identifier of the quest.
-     *
-     * @return The unique identifier of the quest.
-     */
-    public String getId() {
-        return id;
     }
 
     /**

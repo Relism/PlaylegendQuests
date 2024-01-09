@@ -25,7 +25,7 @@ public class ItemUtils {
             return Base64.getEncoder().encodeToString(outputStream.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return "";
         }
     }
 
