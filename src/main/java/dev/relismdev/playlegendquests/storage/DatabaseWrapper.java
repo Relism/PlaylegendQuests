@@ -1,7 +1,7 @@
 package dev.relismdev.playlegendquests.storage;
 
-import dev.relismdev.playlegendquests.Models.Economy;
-import dev.relismdev.playlegendquests.Models.Quest;
+import dev.relismdev.playlegendquests.models.Quest;
+import dev.relismdev.playlegendquests.models.User;
 import dev.relismdev.playlegendquests.Playlegendquests;
 import dev.relismdev.playlegendquests.utils.msg;
 import org.bukkit.OfflinePlayer;
@@ -28,7 +28,7 @@ public class DatabaseWrapper {
 
     /**
      * Initializes the database connection settings, creates connection pool,
-     * and sets up required database tables for quests and economy.
+     * and sets up required database tables for quests and Users.
      * Retrieves database connection settings directly from the plugin configuration.
      */
     public static void init() {
@@ -38,7 +38,7 @@ public class DatabaseWrapper {
         DB_NAME = main.getConfig().getString("db_name");
         initializeConnectionPool();
         createQuestsTable();
-        createEconomyTable();
+        createUsersTable();
     }
 
     /**
@@ -145,23 +145,23 @@ public class DatabaseWrapper {
     }
 
     /**
-     * Creates the 'economy' table in the connected database if it doesn't already exist.
-     * The table includes columns for player UUID as primary key and balance.
+     * Creates the 'users' table in the connected database if it doesn't already exist.
+     * The table includes columns for player UUID as primary key, balance and preferred locale (language).
      * If the table creation fails or an SQL exception occurs during execution, it logs an error.
      *
      * @throws SQLException If an SQL exception occurs during table creation or execution.
      */
-    private static void createEconomyTable() {
+    private static void createUsersTable() {
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
 
-            String initializeEconomyTableQuery = "CREATE TABLE IF NOT EXISTS economy (uuid VARCHAR(36) PRIMARY KEY, balance BIGINT)";
-            statement.execute(initializeEconomyTableQuery);
+            String initializeUsersTableQuery = "CREATE TABLE IF NOT EXISTS users (uuid VARCHAR(36) PRIMARY KEY, balance BIGINT, locale VARCHAR(5))";
+            statement.execute(initializeUsersTableQuery);
 
             releaseConnection(connection);
         } catch (SQLException e) {
             // Log error if table creation fails
-            msg.log("Failed to create 'economy' table: " + e.getMessage());
+            msg.log("Failed to create 'users' table: " + e.getMessage());
         }
     }
 
@@ -303,15 +303,73 @@ public class DatabaseWrapper {
     }
 
     /**
-     * Retrieves the economy details for the provided player from the 'economy' table in the database.
-     * Constructs an Economy object encapsulating the player's economy details if found.
+     * Inserts a new User object into the quests database table.
      *
-     * @param player The OfflinePlayer object for whom the economy details are to be retrieved.
-     * @return An Economy object containing the economy details of the specified player if found; otherwise, null.
+     * This method constructs an INSERT query and executes it to add a new User object into the 'users' table
+     * of the connected database.
+     *
+     * @param user The Quest object to be inserted into the database.
+     * @return True if the insertion is successful; otherwise, false.
+     * @throws NullPointerException If the provided User object is null.
+     * @throws IllegalStateException If there's a SQL exception during the insertion process.
+     */
+    public static boolean createUser(User user) throws SQLException {
+        String query = "INSERT INTO users (uuid, balance, locale) VALUES (?, ?, ?)";
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = getConnection();
+        statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+        statement.setString(1, user.getUuid());
+        statement.setInt(2, user.getBalance());
+        statement.setString(3, user.getLocale());
+
+        int rowsInserted = statement.executeUpdate();
+
+        releaseConnection(connection);
+        return rowsInserted > 0;
+    }
+
+    /**
+     * Updates an existing User in the users table.
+     *
+     * @param user The modified User object to be updated in the database.
+     * @return True if the update is successful; otherwise, false.
+     * @throws NullPointerException     If the provided User object is null.
+     * @throws IllegalStateException    If there's a SQL exception during the update process.
+     */
+    public static boolean updateUser(User user) throws SQLException {
+        if (user == null) {
+            throw new NullPointerException("Provided User object is null.");
+        }
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = getConnection();
+        statement = connection.prepareStatement("UPDATE users SET balance = ?, locale = ? WHERE uuid = ?");
+
+        statement.setInt(1, user.getBalance());
+        statement.setString(2, user.getLocale());
+        statement.setString(3, user.getUuid());
+
+        int rowsAffected = statement.executeUpdate();
+
+        releaseConnection(connection);
+        return rowsAffected > 0; // Returns true if at least one row was affected (updated)
+    }
+
+    /**
+     * Retrieves the User model details for the provided player from the 'users' table in the database.
+     * Constructs a User model object encapsulating the player's User model details if found.
+     *
+     * @param player The OfflinePlayer object for whom the User model details are to be retrieved.
+     * @return A User object containing the User model details of the specified player if found; otherwise, null.
      * @throws SQLException If an SQL exception occurs during the retrieval process.
      */
-    public static Economy getEconomy(OfflinePlayer player) throws SQLException {
-        String query = "SELECT * FROM economy WHERE uuid = ?";
+    public static User getUser(OfflinePlayer player) throws SQLException {
+        String query = "SELECT * FROM users WHERE uuid = ?";
         Connection connection = getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, player.getUniqueId().toString());
@@ -319,8 +377,10 @@ public class DatabaseWrapper {
 
         if (resultSet.next()) {
             int balance = resultSet.getInt("balance");
-            return new Economy(player, balance);
+            String locale = resultSet.getString("locale");
+            return new User(player, balance, locale);
         }
+
         releaseConnection(connection);
         return null;
     }

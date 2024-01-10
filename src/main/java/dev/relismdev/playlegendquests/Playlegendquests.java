@@ -1,8 +1,10 @@
 package dev.relismdev.playlegendquests;
 
 import dev.relismdev.playlegendquests.commands.CommandManager;
-import dev.relismdev.playlegendquests.commands.subcommands.ListenerClass;
+import dev.relismdev.playlegendquests.commands.subcommands.CreateHandler;
+import dev.relismdev.playlegendquests.listeners.PlayerJoinListener;
 import dev.relismdev.playlegendquests.storage.DatabaseWrapper;
+import dev.relismdev.playlegendquests.utils.LocaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,9 +23,11 @@ public class Playlegendquests extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         saveDefaultConfig();
+        LocaleManager.init(this);
         DatabaseWrapper.init(); // Initialize the Database
         getCommand("quests").setExecutor(new CommandManager()); // Register the quests "main" command
-        Bukkit.getServer().getPluginManager().registerEvents(new ListenerClass(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new CreateHandler(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         // Plugin startup logic
     }
 

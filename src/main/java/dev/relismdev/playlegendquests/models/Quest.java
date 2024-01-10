@@ -1,4 +1,4 @@
-package dev.relismdev.playlegendquests.Models;
+package dev.relismdev.playlegendquests.models;
 
 import org.bukkit.inventory.ItemStack;
 

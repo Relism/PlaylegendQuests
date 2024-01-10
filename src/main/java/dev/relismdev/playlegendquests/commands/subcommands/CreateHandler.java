@@ -1,6 +1,6 @@
 package dev.relismdev.playlegendquests.commands.subcommands;
 
-import dev.relismdev.playlegendquests.Models.Quest;
+import dev.relismdev.playlegendquests.models.Quest;
 import dev.relismdev.playlegendquests.storage.DatabaseInterface;
 import dev.relismdev.playlegendquests.utils.msg;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ import java.util.HashMap;
  * Listens to player chat events to handle quest creation process through chat messages.
  * Uses {@link org.bukkit.event.player.AsyncPlayerChatEvent} for interaction.
  */
-public class ListenerClass implements Listener {
+public class CreateHandler implements Listener {
 
     // HashMaps to store data temporarily for quest creation
     public static HashMap<Player, Quest> questCreationData = new HashMap<>();
@@ -44,7 +44,7 @@ public class ListenerClass implements Listener {
                     quest.setName(e.getMessage());
                     questCreationStep.put(player, 2);
                     questCreationData.put(player, quest);
-                    msg.send(player, "Input the Quest description:");
+                    msg.sendLocale(player, "input_quest_description");
                     break;
 
                 case 2:
@@ -52,7 +52,7 @@ public class ListenerClass implements Listener {
                     quest.setDescription(e.getMessage());
                     questCreationStep.put(player, 3);
                     questCreationData.put(player, quest);
-                    msg.send(player, "Input the Quest reward coins (0 if none):");
+                    msg.sendLocale(player, "input_quest_coins");
                     break;
 
                 case 3:
@@ -60,7 +60,7 @@ public class ListenerClass implements Listener {
                     quest.setReward_coins(Integer.parseInt(e.getMessage()));
                     questCreationStep.put(player, 4);
                     questCreationData.put(player, quest);
-                    msg.send(player, "Use the item you're holding as the reward item? (true/false):");
+                    msg.sendLocale(player, "input_quest_item");
                     break;
 
                 case 4:
@@ -76,7 +76,7 @@ public class ListenerClass implements Listener {
                     questCreationStep.remove(player);
                     questCreationData.remove(player);
                     DatabaseInterface.createQuest(quest);
-                    msg.send(player, "Successfully created the quest!");
+                    msg.sendLocale(player, "quest_creation_success");
                     break;
             }
         }

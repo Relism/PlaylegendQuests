@@ -1,6 +1,6 @@
 package dev.relismdev.playlegendquests.commands.subcommands;
 
-import dev.relismdev.playlegendquests.Models.Quest;
+import dev.relismdev.playlegendquests.models.Quest;
 import dev.relismdev.playlegendquests.commands.SubCommand;
 import dev.relismdev.playlegendquests.utils.msg;
 import org.bukkit.entity.Player;
@@ -51,10 +51,10 @@ public class CreateCommand extends SubCommand {
     @Override
     public void perform(Player player, String[] args) {
         // Prompt the player to input the Quest name
-        msg.send(player, "Input the Quest name:");
+        msg.sendLocale(player, "input_quest_name");
 
         // Create a new Quest object and store it for the player's quest creation
         Quest quest = new Quest(null, null, 0, null);
-        ListenerClass.questCreationData.put(player, quest);
+        CreateHandler.questCreationData.put(player, quest);
     }
 }

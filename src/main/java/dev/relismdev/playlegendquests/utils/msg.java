@@ -1,6 +1,8 @@
 package dev.relismdev.playlegendquests.utils;
 
+import dev.relismdev.playlegendquests.models.User;
 import dev.relismdev.playlegendquests.Playlegendquests;
+import dev.relismdev.playlegendquests.storage.DatabaseInterface;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -39,6 +41,27 @@ public class msg {
     public static void send(Player p, String message) {
         p.sendMessage(translateColorCodes(PlaceholderAPI.setPlaceholders(p, message)));
     }
+
+    /**
+     * Sends a message to a player based on their locale.
+     *
+     * @param player     The player to send the message to.
+     * @param messageKey The key for the message to be retrieved.
+     */
+    public static void sendLocale(Player player, String messageKey) {
+        // Retrieve user information from the database
+        User user = DatabaseInterface.getUser(player);
+        // Determine the appropriate locale based on user information or default if unavailable
+        String locale;
+        if (user != null) {
+            locale = user.getLocale();
+        } else {
+            locale = LocaleManager.getDefaultLocale();
+        }
+        // Retrieve the message based on the locale and message key, then send it to the player
+        send(player, LocaleManager.getMessage(locale, messageKey));
+    }
+
 
     /**
      * Sends a color-translated message to all players on the server.

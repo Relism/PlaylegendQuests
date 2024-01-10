@@ -1,8 +1,7 @@
 package dev.relismdev.playlegendquests.storage;
 
-import dev.relismdev.playlegendquests.Models.Economy;
-import dev.relismdev.playlegendquests.Models.Quest;
-import dev.relismdev.playlegendquests.storage.DatabaseWrapper;
+import dev.relismdev.playlegendquests.models.Quest;
+import dev.relismdev.playlegendquests.models.User;
 import dev.relismdev.playlegendquests.utils.msg;
 import org.bukkit.OfflinePlayer;
 
@@ -85,7 +84,20 @@ public class DatabaseInterface {
         }
     }
 
-    // Other private utility methods
+    /**
+     * Attempts to create a new user in the database.
+     *
+     * @param user The Quest object to be created in the database.
+     * @return True if the creation is successful; otherwise, false.
+     */
+    public static boolean createUser(User user){
+        try {
+            return DatabaseWrapper.createUser(user);
+        } catch (SQLException e) {
+            errorHandle(e);
+            return false;
+        }
+    }
 
     /**
      * Retrieves an Economy object for the specified OfflinePlayer from the database.
@@ -93,12 +105,27 @@ public class DatabaseInterface {
      * @param player The OfflinePlayer to retrieve the Economy object for.
      * @return The Economy object associated with the player; null if not found or an error occurs.
      */
-    private static Economy getEconomy(OfflinePlayer player){
+    public static User getUser(OfflinePlayer player){
         try {
-            return DatabaseWrapper.getEconomy(player);
+            return DatabaseWrapper.getUser(player);
         } catch (SQLException e){
             errorHandle(e);
             return null;
+        }
+    }
+
+    /**
+     * Updates an existing quest in the database.
+     *
+     * @param user The modified User object to be updated in the database.
+     * @return True if the update is successful; otherwise, false.
+     */
+    public static boolean updateUser(User user){
+        try {
+            return DatabaseWrapper.updateUser(user);
+        } catch (SQLException e) {
+            errorHandle(e);
+            return false;
         }
     }
 
