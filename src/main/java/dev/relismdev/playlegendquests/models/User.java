@@ -21,7 +21,7 @@ public class User {
      */
     public User(OfflinePlayer player, int balance, String locale) {
         this.player = player;
-        this.uuid = String.valueOf(p.getUniqueId());
+        this.uuid = String.valueOf(player.getUniqueId());
         this.balance = balance;
         this.locale = locale;
     }
