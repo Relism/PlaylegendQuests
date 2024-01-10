@@ -1,6 +1,7 @@
 dev.relismdev.playlegendquests
 dev.relismdev.playlegendquests.commands
 dev.relismdev.playlegendquests.commands.subcommands
-dev.relismdev.playlegendquests.Models
+dev.relismdev.playlegendquests.listeners
+dev.relismdev.playlegendquests.models
 dev.relismdev.playlegendquests.storage
 dev.relismdev.playlegendquests.utils
