@@ -1,0 +1,5 @@
+input_quest_name: "Enter the quest name here"
+input_quest_desc: "Enter the quest description here"
+input_quest_coins: "Enter the number of reward coins here (0 if none)"
+input_quest_item: "Use the item you're holding as the reward item? (true/false)"
+quest_creation_success: "Successfully created the quest!"

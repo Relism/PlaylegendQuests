@@ -100,10 +100,10 @@ public class DatabaseInterface {
     }
 
     /**
-     * Retrieves an Economy object for the specified OfflinePlayer from the database.
+     * Retrieves an User object for the specified OfflinePlayer from the database.
      *
-     * @param player The OfflinePlayer to retrieve the Economy object for.
-     * @return The Economy object associated with the player; null if not found or an error occurs.
+     * @param player The OfflinePlayer to retrieve the User object for.
+     * @return The User object associated with the player; null if not found or an error occurs.
      */
     public static User getUser(OfflinePlayer player){
         try {
